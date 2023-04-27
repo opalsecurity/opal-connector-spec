@@ -1,0 +1,1 @@
+# opal-connector-spec
