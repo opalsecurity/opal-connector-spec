@@ -488,19 +488,15 @@ paths:
           schema:
             type: string
           style: simple
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                app_id:
-                  description: The identifier of your custom app.
-                  example: my-custom-app
-                  type: string
-              required:
-                - group_id
-                - app_id
+        - description: The identifier of your custom app.
+          example: my-custom-app
+          explode: true
+          in: query
+          name: app_id
+          required: true
+          schema:
+            type: string
+          style: form
       responses:
         "200":
           description: The member group was successfully removed from the group
