@@ -465,6 +465,7 @@ paths:
         - BearerAuth: []
       tags:
         - groups
+  /groups/{group_id}/groups/{member_group_id}:
     delete:
       description: Remove a group from the specified group
       operationId: removeGroupGroup
@@ -478,16 +479,21 @@ paths:
           schema:
             type: string
           style: simple
+        - description: The ID of the child group to remove.
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          in: path
+          explode: true
+          name: member_group_id
+          required: true
+          schema:
+            type: string
+          style: simple
       requestBody:
         required: true
         content:
           application/json:
             schema:
               properties:
-                group_id:
-                  description: The id of the child group to remove.
-                  example: f454d283-ca67-4a8a-bdbb-df212eca5353
-                  type: string
                 app_id:
                   description: The identifier of your custom app.
                   example: my-custom-app
