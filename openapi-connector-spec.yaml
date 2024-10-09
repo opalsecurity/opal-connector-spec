@@ -421,9 +421,9 @@ paths:
         - BearerAuth: []
       tags:
         - groups
-  /groups/{group_id}/groups:
+  /groups/{group_id}/member-groups:
     post:
-      description: Add a group to the specified group
+      description: Add a member group to the specified group
       operationId: addGroupGroup
       parameters:
         - description: The ID of the parent group
@@ -442,7 +442,7 @@ paths:
             schema:
               properties:
                 group_id:
-                  description: The id of the child group to add.
+                  description: The ID of the member group to add.
                   example: f454d283-ca67-4a8a-bdbb-df212eca5353
                   type: string
                 app_id:
@@ -465,9 +465,9 @@ paths:
         - BearerAuth: []
       tags:
         - groups
-  /groups/{group_id}/groups/{member_group_id}:
+  /groups/{group_id}/member-groups/{member_group_id}:
     delete:
-      description: Remove a group from the specified group
+      description: Remove a member group from the specified group
       operationId: removeGroupGroup
       parameters:
         - description: The ID of the parent group
@@ -479,7 +479,7 @@ paths:
           schema:
             type: string
           style: simple
-        - description: The ID of the child group to remove.
+        - description: The ID of the member group to remove.
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           in: path
           explode: true
