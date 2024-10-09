@@ -422,8 +422,6 @@ paths:
       tags:
         - groups
   /groups/{group_id}/member-groups:
-    get:
-      description: 
     post:
       description: Add a member group to the specified group
       operationId: addGroupMemberGroup
