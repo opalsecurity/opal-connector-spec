@@ -422,9 +422,11 @@ paths:
       tags:
         - groups
   /groups/{group_id}/member-groups:
+    get:
+      description: 
     post:
       description: Add a member group to the specified group
-      operationId: addGroupGroup
+      operationId: addGroupMemberGroup
       parameters:
         - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
@@ -468,7 +470,7 @@ paths:
   /groups/{group_id}/member-groups/{member_group_id}:
     delete:
       description: Remove a member group from the specified group
-      operationId: removeGroupGroup
+      operationId: removeGroupMemberGroup
       parameters:
         - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
