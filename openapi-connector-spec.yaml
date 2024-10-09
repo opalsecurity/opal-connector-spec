@@ -503,7 +503,7 @@ paths:
                 - app_id
       responses:
         "200":
-          description: The group was successfully removed from the group
+          description: The member group was successfully removed from the group
         "401":
           $ref: "#/components/responses/InvalidRequestSignatureError"
         "404":
