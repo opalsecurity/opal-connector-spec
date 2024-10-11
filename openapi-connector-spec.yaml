@@ -1215,6 +1215,14 @@ components:
                 description: 
                 example: f454d283-ca67-4a8a-bdbb-df212eca5353
                 type: string
+              name:
+                description:
+                example: Test Group
+                type: string
+              description: 
+                description:
+                example: Test Group Description
+                type: string
       type: object
       required:
         - groups
