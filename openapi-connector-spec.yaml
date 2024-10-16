@@ -1195,7 +1195,7 @@ components:
       type: object
       required:
         - resources
-    GroupMemberGroupResponse:
+    GroupMemberGroupsResponse:
       example:
         next_cursor: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
         group_id: f454d283-ca67-4a8a-bdbb-df212eca5353
