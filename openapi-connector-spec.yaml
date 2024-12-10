@@ -89,6 +89,15 @@ paths:
           schema:
             type: string
           style: form
+        - description: For connectors that support hierarchical resources, this param will be passed to get the children of the specified parent resource.
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          explode: true
+          in: query
+          name: parent_id
+          required: false
+          schema:
+            type: string
+          style: form
       responses:
         "200":
           content:
@@ -426,7 +435,7 @@ paths:
       description: Get member groups for the specified group
       operationId: getGroupMemberGroups
       parameters:
-        - description: The ID of the containing group
+        - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           in: path
           explode: true
@@ -458,7 +467,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GroupMemberGroupResponse"
+                $ref: "#/components/schemas/GroupMemberGroupsResponse"
           description: The member groups for the specified group
         "401":
           $ref: "#/components/responses/InvalidRequestSignatureError"
@@ -474,7 +483,7 @@ paths:
       description: Add a member group to the specified group
       operationId: addGroupMemberGroup
       parameters:
-        - description: The ID of the containing group
+        - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           in: path
           explode: true
@@ -518,7 +527,7 @@ paths:
       description: Remove a member group from the specified group
       operationId: removeGroupMemberGroup
       parameters:
-        - description: The ID of the containing group
+        - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           in: path
           explode: true
@@ -1109,26 +1118,16 @@ components:
         - resource_id
     GroupResponse:
       example:
-        id: f454d283-ca67-4a8a-bdbb-df212eca5353
-        name: Engineering team
-        description: This group represents the engineering team.
+        group:
+          - id: f454d283-ca67-4a8a-bdbb-df212eca5353
+            name: Engineering team
+            description: This group represents the engineering team.
       properties:
-        id:
-          description: The id of the group in your system. Opal will provide this id when making requests for the group to your connector.
-          example: f454d283-ca67-4a8a-bdbb-df212eca5353
-          type: string
-        name:
-          description: The name of the group
-          example: Admin
-          type: string
-        description:
-          description: The description of the group
-          example: This group represents the engineering team.
-          type: string
+        group:
+          $ref: "#/components/schemas/Group"
       type: object
       required:
-        - id
-        - name
+        - group
     GroupsResponse:
       example:
         next_cursor: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
@@ -1195,10 +1194,31 @@ components:
       type: object
       required:
         - resources
+    GroupMemberGroup:
+      example:
+        group_id: f454d283-ca67-4a8a-bdbb-df212eca5353
+        name: A Test Group
+        description: Test Group Description
+      properties:
+        group_id:
+          description: The member group's ID
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          type: string
+        name:
+          description: The member group's name
+          example: Test Group
+          type: string
+        description:
+          description: The member group's description
+          example: Test Group Description
+          type: string
     GroupMemberGroupsResponse:
       example:
         next_cursor: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
-        group_id: f454d283-ca67-4a8a-bdbb-df212eca5353
+        groups:
+          - group_id: f454d283-ca67-4a8a-bdbb-df212eca5353
+            name: A Test Group
+            description: Test Group Description
       properties:
         next_cursor:
           description:
@@ -1209,20 +1229,8 @@ components:
           type: string
         groups:
           items:
-            type: object
-            properties:
-              group_id:
-                description: 
-                example: f454d283-ca67-4a8a-bdbb-df212eca5353
-                type: string
-              name:
-                description:
-                example: Test Group
-                type: string
-              description: 
-                description:
-                example: Test Group Description
-                type: string
+            $ref: "#/components/schemas/GroupMemberGroup"
+          type: array
       type: object
       required:
         - groups
