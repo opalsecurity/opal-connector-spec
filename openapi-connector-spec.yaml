@@ -854,7 +854,62 @@ paths:
         - BearerAuth: []
       tags:
         - groups
-
+  /events:
+    get:
+      description: Lists events from your custom connector app.
+      operationId: getEvents
+      parameters:
+        - description: The pagination cursor value.
+          example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+          explode: true
+          in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+          style: form
+        - description: The identifier of your custom app.
+          example: my-custom-app
+          explode: true
+          in: query
+          name: app_id
+          required: true
+          schema:
+            type: string
+          style: form
+        - description: Return events starting from this date
+          example: 2024-01-01T00:00:00Z
+          explode: true
+          in: query
+          name: start
+          required: false
+          schema:
+            format: date-time
+            type: string
+        - description: Return events ending before from this date
+          example: 2024-01-02T00:00:00Z
+          explode: true
+          in: query
+          name: end
+          required: false
+          schema:
+            format: date-time
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventsResponse"
+          description: One page of events that exist for your custom app within the specified time window
+        "401":
+          $ref: "#/components/responses/InvalidRequestSignatureError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+      security:
+        - BearerAuth: []
+      tags:
+        - events
 components:
   responses:
     EntityNotFoundError:
@@ -1235,3 +1290,69 @@ components:
       required:
         - groups
         - next_cursor
+    ActorUserIdentifier:
+      properties:
+        user_id:
+          description: The id of the user.
+          example: 123
+          type: string
+        user_email:
+          description: The email of the user.
+          example: test@test.com
+          type: string
+      type: object
+      required:
+        - user_id
+        - user_email
+    EventContentLoginSuccess:
+      properties:
+        resource_id:
+          description: The id of the resource in your system that the actor logged in to.
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          type: string
+      type: object
+      required:
+        - resource_id
+    Event:
+      properties:
+        event_id:
+          description: A unique ID for the event
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          type: string
+        event_type:
+          description: The type of the event, the payload must correspond to this
+          example: login.success
+          type: string
+          enum: [login.success]
+        occurred_at:
+          description: The time the event occurred
+          example: 2024-01-01T00:00:00Z
+          format: date-time
+          type: string
+        actor_user_identifier:
+          $ref: "#/components/schemas/ActorUserIdentifier"
+        event_content:
+          anyOf:
+            - $ref: "#/components/schemas/EventContentLoginSuccess"
+      type: object
+      required:
+        - event_id
+        - event_type
+        - occurredAt
+        - actor_user_identifier
+    EventsResponse:
+      properties:
+        next_cursor:
+          description:
+            The cursor with which to continue pagination if additional
+            result pages exist.
+          example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+          nullable: true
+          type: string
+        events:
+          items:
+            $ref: "#/components/schemas/Event"
+          type: array
+      type: object
+      required:
+        - events
