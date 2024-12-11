@@ -24,8 +24,6 @@ paths:
           $ref: "#/components/responses/InvalidRequestSignatureError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - status
   /users:
@@ -62,8 +60,6 @@ paths:
           $ref: "#/components/responses/InvalidRequestSignatureError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - users
   /resources:
@@ -100,8 +96,6 @@ paths:
           $ref: "#/components/responses/InvalidRequestSignatureError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - resources
   /resources/{resource_id}:
@@ -140,8 +134,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - resources
   /resources/{resource_id}/access_levels:
@@ -189,8 +181,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - resources
   /resources/{resource_id}/users:
@@ -238,8 +228,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - resources
     post:
@@ -285,8 +273,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - resources
   /resources/{resource_id}/users/{user_id}:
@@ -339,8 +325,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - resources
   /groups:
@@ -377,8 +361,6 @@ paths:
           $ref: "#/components/responses/InvalidRequestSignatureError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
   /groups/{group_id}:
@@ -417,8 +399,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
   /groups/{group_id}/member-groups:
@@ -466,8 +446,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
     post:
@@ -509,8 +487,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
   /groups/{group_id}/member-groups/{member_group_id}:
@@ -554,8 +530,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
   /groups/{group_id}/users:
@@ -603,8 +577,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
     post:
@@ -646,8 +618,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
   /groups/{group_id}/users/{user_id}:
@@ -691,8 +661,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
   /groups/{group_id}/resources:
@@ -740,8 +708,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
     post:
@@ -787,8 +753,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
   /groups/{group_id}/resources/{resource_id}:
@@ -841,8 +805,6 @@ paths:
           $ref: "#/components/responses/EntityNotFoundError"
         default:
           $ref: "#/components/responses/UnexpectedError"
-      security:
-        - BearerAuth: []
       tags:
         - groups
 
