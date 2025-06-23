@@ -27,6 +27,46 @@ paths:
       tags:
         - status
   /users:
+    post:
+      description: Creates a user in your custom connector app
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  description: The ID of the user to create in your custom connector app.
+                  example: 123
+                  type: string
+                attributes:
+                  description: The attributes of the user to create in your custom connector app.
+                  $ref: "#/components/schemas/UserAttributes"
+                manager:
+                  description: The manager of the user to create in your custom connector app.
+                  $ref: "#/components/schemas/UserAttributes"
+                user_tags:
+                  description: The tags of the user that were ingested by Opal
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/UserTags"
+      responses:
+        "200":
+          description: The user was successfully added to the custom connector app.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUserResponse"
+        "401":
+          $ref: "#/components/responses/InvalidRequestSignatureError"
+        "404":
+          $ref: "#/components/responses/EntityNotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+      tags:
+        - users
     get:
       description: Returns a list of users for your custom connector app.
       operationId: getUsers
@@ -82,6 +122,15 @@ paths:
           in: query
           name: app_id
           required: true
+          schema:
+            type: string
+          style: form
+        - description: For connectors that support hierarchical resources, this param will be passed to get the children of the specified parent resource.
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          explode: true
+          in: query
+          name: parent_id
+          required: false
           schema:
             type: string
           style: form
@@ -406,7 +455,7 @@ paths:
       description: Get member groups for the specified group
       operationId: getGroupMemberGroups
       parameters:
-        - description: The ID of the containing group
+        - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           in: path
           explode: true
@@ -452,7 +501,7 @@ paths:
       description: Add a member group to the specified group
       operationId: addGroupMemberGroup
       parameters:
-        - description: The ID of the containing group
+        - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           in: path
           explode: true
@@ -494,7 +543,7 @@ paths:
       description: Remove a member group from the specified group
       operationId: removeGroupMemberGroup
       parameters:
-        - description: The ID of the containing group
+        - description: The ID of the parent group
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           in: path
           explode: true
@@ -807,7 +856,60 @@ paths:
           $ref: "#/components/responses/UnexpectedError"
       tags:
         - groups
-
+  /events:
+    get:
+      description: Lists events from your custom connector app.
+      operationId: getEvents
+      parameters:
+        - description: The pagination cursor value.
+          example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+          explode: true
+          in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+          style: form
+        - description: The identifier of your custom app.
+          example: my-custom-app
+          explode: true
+          in: query
+          name: app_id
+          required: true
+          schema:
+            type: string
+          style: form
+        - description: Return events starting from this date
+          example: 2024-01-01T00:00:00Z
+          explode: true
+          in: query
+          name: start
+          required: false
+          schema:
+            format: date-time
+            type: string
+        - description: Return events ending before from this date
+          example: 2024-01-02T00:00:00Z
+          explode: true
+          in: query
+          name: end
+          required: false
+          schema:
+            format: date-time
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventsResponse"
+          description: One page of events that exist for your custom app within the specified time window
+        "401":
+          $ref: "#/components/responses/InvalidRequestSignatureError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+      tags:
+        - events
 components:
   responses:
     EntityNotFoundError:
@@ -857,6 +959,11 @@ components:
           description: The description of the resource. If provided, it will be imported into Opal.
           example: This resource represents the admin role.
           type: string
+        can_have_usage_data:
+          description: Whether the resource supports usage data.
+          example: true
+          nullable: true
+          type: boolean
       type: object
       required:
         - id
@@ -1071,26 +1178,16 @@ components:
         - resource_id
     GroupResponse:
       example:
-        id: f454d283-ca67-4a8a-bdbb-df212eca5353
-        name: Engineering team
-        description: This group represents the engineering team.
+        group:
+          - id: f454d283-ca67-4a8a-bdbb-df212eca5353
+            name: Engineering team
+            description: This group represents the engineering team.
       properties:
-        id:
-          description: The id of the group in your system. Opal will provide this id when making requests for the group to your connector.
-          example: f454d283-ca67-4a8a-bdbb-df212eca5353
-          type: string
-        name:
-          description: The name of the group
-          example: Admin
-          type: string
-        description:
-          description: The description of the group
-          example: This group represents the engineering team.
-          type: string
+        group:
+          $ref: "#/components/schemas/Group"
       type: object
       required:
-        - id
-        - name
+        - group
     GroupsResponse:
       example:
         next_cursor: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
@@ -1164,15 +1261,15 @@ components:
         description: Test Group Description
       properties:
         group_id:
-          description: 
+          description: The member group's ID
           example: f454d283-ca67-4a8a-bdbb-df212eca5353
           type: string
         name:
-          description:
+          description: The member group's name
           example: Test Group
           type: string
-        description: 
-          description:
+        description:
+          description: The member group's description
           example: Test Group Description
           type: string
     GroupMemberGroupsResponse:
@@ -1198,3 +1295,136 @@ components:
       required:
         - groups
         - next_cursor
+    ActorUserIdentifier:
+      properties:
+        user_id:
+          description: The id of the user.
+          example: 123
+          type: string
+        user_email:
+          description: The email of the user.
+          example: test@test.com
+          type: string
+      type: object
+      required:
+        - user_id
+        - user_email
+    EventContentLoginSuccess:
+      properties:
+        resource_id:
+          description: The id of the resource in your system that the actor logged in to.
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          type: string
+      type: object
+      required:
+        - resource_id
+    EventTypes:
+      description: The type of the event, the payload must correspond to this
+      example: login.success
+      type: string
+      enum:
+        - login.success
+    Event:
+      properties:
+        event_id:
+          description: A unique ID for the event
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          type: string
+        # openapi-generator refuses to generate inline enums as proper enum types
+        # https://github.com/OpenAPITools/openapi-generator/issues/2360
+        event_type:
+          $ref: "#/components/schemas/EventTypes"
+        occurred_at:
+          description: The time the event occurred
+          example: 2024-01-01T00:00:00Z
+          format: date-time
+          type: string
+        actor_user_identifier:
+          $ref: "#/components/schemas/ActorUserIdentifier"
+        event_content:
+          oneOf:
+            - $ref: "#/components/schemas/EventContentLoginSuccess"
+      type: object
+      required:
+        - event_id
+        - event_type
+        - occurredAt
+        - actor_user_identifier
+    EventsResponse:
+      properties:
+        next_cursor:
+          description:
+            The cursor with which to continue pagination if additional
+            result pages exist.
+          example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+          type: string
+        events:
+          items:
+            $ref: "#/components/schemas/Event"
+          type: array
+      type: object
+      required:
+        - events
+    CreateUserResponse:
+      type: object
+      properties:
+        remote_user_id:
+          description: The ID of the user in your system. Opal will use this to associate the user with the corresponding Opal user.
+          example: f454d283-ca67-4a8a-bdbb-df212eca5353
+          type: string
+      required:
+        - remote_user_id
+    UserTags:
+      type: object
+      properties:
+        key:
+          description: The key of the tag in Opal
+          example: team
+          type: string
+        value:
+          description: The value of the tag in Opal
+          example: Engineering
+          type: string
+        tag_id:
+          description: The ID of the tag in Opal
+          example: 2f9d3b8d-c567-4ae2-9e91-5d3f21c6ae62
+          type: string
+        connection_id:
+          description: The ID of the source connection in Opal
+          example: 12345678-1234-1234-1234-123456789012
+          type: string
+    UserAttributes:
+      type: object
+      properties:
+        email:
+          description: The email of the user.
+          example: johndoe@acme.com
+          type: string
+        first_name:
+          description: The first name of the user.
+          example: John
+          type: string
+        last_name:
+          description: The last name of the user.
+          example: Doe
+          type: string
+        title:
+          description: The title of the user, if available
+          example: Engineering Manager
+          type: string
+        team:
+          description: The team of the user, if available
+          example: Engineering
+          type: string
+        profile_url:
+          description: The URL to the user's profile photo
+          example: https://acme.com/users/johndoe.jpg
+          type: string
+        secondary_emails:
+          description: The secondary emails of the user, if available
+          example:
+            - johndoe@fizz.com
+            - johndoe@bar.com
+          type: array
+          items:
+            type: string
